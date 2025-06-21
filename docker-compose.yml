@@ -1,0 +1,71 @@
+version: '3.8'  # Docker Compose file format version
+
+services:
+  postgres:
+    image: postgres:15  # Use official PostgreSQL version 15 image
+    environment:
+      POSTGRES_USER: postgres  # Default DB user
+      POSTGRES_PASSWORD: mysecretpassword  # User password
+      POSTGRES_DB: postgres  # Default DB name
+    ports:
+      - "5433:5432"  # Map port 5432 in container to 5432 on host (you can change host port if needed)
+    volumes:
+      - pgdata:/var/lib/postgresql/data  # Save DB data on host to keep it even if container is deleted
+
+  airflow:
+    build: .  # This will use your Dockerfile
+    image: custom_airflow:latest
+    container_name: airflow_etl  # Name of the container (optional)
+    depends_on:
+      - postgres  # Wait for Postgres to be ready before starting
+    environment:
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"  # Don’t load example DAGs
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://postgres:mysecretpassword@postgres:5432/postgres  
+      AIRFLOW__CORE__EXECUTOR: SequentialExecutor
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "false"
+      # Connection string for Airflow metadata DB (Postgres)
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./data:/opt/airflow/dags/data
+      - ./scripts:/opt/airflow/dags/scripts
+      - ./logs:/opt/airflow/logs  # <== ADD THIS
+      - ./dbt:/usr/app
+      - ./dbt/profiles.yml:/home/airflow/.dbt/profiles.yml  # 🔑 mount profile where DBT expects it
+      - ./env_file.env:/opt/airflow/dags/env_file.env  # ✅ mount as file
+    entrypoint: /bin/bash -c "airflow db migrate && airflow users create --username admin --firstname Admin --lastname User --role Admin --email admin@example.com --password admin && airflow webserver"
+      # Run DB migration, create Airflow admin user, then start webserver
+    ports:
+      - "8081:8080"  # Access Airflow UI at http://localhost:8081
+
+  airflow_scheduler:
+    build: .
+    image: custom_airflow:latest
+    depends_on:
+      - postgres
+    environment:
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://postgres:mysecretpassword@postgres:5432/postgres
+      AIRFLOW__CORE__EXECUTOR: SequentialExecutor 
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "false"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./data:/opt/airflow/dags/data
+      - ./scripts:/opt/airflow/dags/scripts
+      - ./logs:/opt/airflow/logs  # To check logs
+      - ./dbt:/usr/app
+      - ./dbt/profiles.yml:/home/airflow/.dbt/profiles.yml  # 🔑 mount profile where DBT expects it
+      - ./env_file.env:/opt/airflow/dags/env_file.env  # For ENV
+    command: scheduler  # Run the scheduler process (this schedules DAGs to run)
+
+  dbt:
+    image: ghcr.io/dbt-labs/dbt-postgres:1.7.6  # Use official DBT image for PostgreSQL
+    volumes:
+      - .:/usr/app  # Mount the entire current project directory to /usr/app inside the container
+    working_dir: /usr/app  # Set working directory so dbt can run from here
+    depends_on:
+      - postgres
+    environment:
+      DBT_PROFILES_DIR: /usr/app  # Tell dbt to find profiles.yml in your project folder instead of ~/.dbt
+
+volumes:
+  pgdata:  # Declare a named volume for PostgreSQL data. Docker creates this automatically

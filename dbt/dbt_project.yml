@@ -1,0 +1,10 @@
+name: postgres
+version: 1.0
+profile: postgres  # This must match the profile name in your dbt `profiles.yml`
+
+model-paths: ["models"]
+
+models:
+  postgres:
+    mart:
+      +materialized: table

@@ -1,0 +1,49 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.log
+*.sqlite
+*.db
+
+# --- Environment Variables ---
+.env
+*.env
+env_file.env
+
+# --- Virtual Environments ---
+airflow_venv/
+.venv/
+venv/
+
+# --- Airflow ---
+logs/
+airflow.cfg
+airflow.db
+unittests.cfg
+.dags/
+
+# --- Airflow DAG + Log Folders ---
+dags/__pycache__/
+dags/data/
+dags/env_file.env
+
+# --- DBT ---
+dbt_packages/
+target/
+dbt.log
+profiles.yml
+.user.yml
+
+# --- Docker ---
+*.pid
+*.sock
+
+# --- OS / Editor / Misc ---
+.DS_Store
+.vscode/
+.idea/
+
+# --- Jupyter / IPython ---
+.ipynb_checkpoints/
