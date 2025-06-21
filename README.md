@@ -36,23 +36,30 @@ To simulate a real-world ETL pipeline setup using modern tools and a reproducibl
 ---
 ## 📦 Project Structure
 
+
+```
 dota2-etl-pipeline/
 ├── dags/
-│ ├── opendota_dag.py # Airflow DAG definition
-│ └── env_file.env # Environment variables (not tracked)
+│   ├── opendota_dag.py       # Airflow DAG definition
+│   └── env_file.env          # Environment variables (not tracked)
+│
 ├── scripts/
-│ ├── extract.py # Fetches match data from OpenDota API
-│ ├── load.py # Loads data into PostgreSQL
-│ ├── notify.py # Sends Slack alerts
-│ └── email_report.py # Generates and emails summary reports
+│   ├── extract.py            # Fetches match data from OpenDota API
+│   ├── load.py               # Loads data into PostgreSQL
+│   ├── notify.py             # Sends Slack alerts
+│   └── email_report.py       # Generates and emails summary reports
+│
 ├── dbt/
-│ ├── models/ mart # dbt models for transformations
-│ └── dbt_project.yml # dbt configuration
-│ └── profiles.yml #  dbt connection settings (used by Docker)
-├── Dockerfile # Custom Airflow image
-├── docker-compose.yml # Defines and runs the container stack
-├── .gitignore # Excludes logs, env files, etc.
-└── README.md # Project overview and documentation
+│   ├── models/
+│   │   └── mart/             # dbt models for transformations
+│   ├── dbt_project.yml       # dbt configuration
+│   └── profiles.yml          # dbt connection settings (used by Docker)
+│
+├── Dockerfile                # Custom Airflow image
+├── docker-compose.yml        # Defines and runs the container stack
+├── .gitignore                # Excludes logs, env files, etc.
+└── README.md                 # Project overview and documentation
+```
 
 ## 🏗️ Tech Stack
 
