@@ -1,14 +1,14 @@
-# Dota 2 ETL Pipeline
+# Dota 2 ELT Pipeline
 
 This is a personal data engineering project that automates the extraction, transformation, and reporting of professional Dota 2 match data.
 
-The pipeline is fully containerized using **Docker** and uses **Apache Airflow**, **Python**, **dbt**, and **PostgreSQL** to manage daily ETL workflows. Slack notifications and email reports are also included for monitoring and output delivery.
+The pipeline is fully containerized using **Docker** and uses **Apache Airflow**, **Python**, **dbt**, and **PostgreSQL** to manage daily ELT workflows. Slack notifications and email reports are also included for monitoring and output delivery.
 
 ---
 
 ## 💡 Purpose
 
-To simulate a real-world ETL pipeline setup using modern tools and a reproducible Docker-based environment.
+To simulate a real-world ELT pipeline setup using modern tools and a reproducible Docker-based environment.
 
 ---
 
@@ -21,7 +21,7 @@ To simulate a real-world ETL pipeline setup using modern tools and a reproducibl
 - **PostgreSQL** – data warehouse for match data
 - **Slack Webhooks** – for real-time success/failure notifications
 - **SMTP (Gmail)** – for sending reports via email
-- **.env files** – for environment variable and secret management
+- **.env files** – for environment variables and secret management
 
 ---
 
@@ -38,7 +38,7 @@ To simulate a real-world ETL pipeline setup using modern tools and a reproducibl
 
 
 ```
-dota2-etl-pipeline/
+dota2-ETL-pipeline/
 ├── dags/
 │   ├── opendota_dag.py       # Airflow DAG definition
 │   └── env_file.env          # Environment variables (not tracked)
